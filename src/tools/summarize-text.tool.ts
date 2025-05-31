@@ -36,7 +36,7 @@ export async function summarizeText(text: string) {
     );
 
     const content = processResponse(response.data);
-    return content.content;
+    return content;
   } catch (error) {
     console.error("Anthropic API error:", error.response?.data || error);
     throw new Error("Failed to summarize text using Claude");
@@ -45,16 +45,7 @@ export async function summarizeText(text: string) {
 
 function processResponse(data: any) {
   const rawText = data?.content?.[0]?.text?.trim() || "";
-
-  let parsedContent: any = {};
-  try {
-    parsedContent = JSON.parse(rawText);
-  } catch (err) {
-    parsedContent = { rawText };
-  }
-
   return {
-    aiResponse: data,
-    content: parsedContent,
+    output: rawText,
   };
 }

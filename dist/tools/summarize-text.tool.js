@@ -28,7 +28,7 @@ async function summarizeText(text) {
             },
         });
         const content = processResponse(response.data);
-        return content.content;
+        return content;
     }
     catch (error) {
         console.error("Anthropic API error:", error.response?.data || error);
@@ -37,16 +37,8 @@ async function summarizeText(text) {
 }
 function processResponse(data) {
     const rawText = data?.content?.[0]?.text?.trim() || "";
-    let parsedContent = {};
-    try {
-        parsedContent = JSON.parse(rawText);
-    }
-    catch (err) {
-        parsedContent = { rawText };
-    }
     return {
-        aiResponse: data,
-        content: parsedContent,
+        output: rawText,
     };
 }
 //# sourceMappingURL=summarize-text.tool.js.map

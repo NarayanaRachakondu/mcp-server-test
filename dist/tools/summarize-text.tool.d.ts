@@ -1,1 +1,3 @@
-export declare function summarizeText(text: string): Promise<any>;
+export declare function summarizeText(text: string): Promise<{
+    output: any;
+}>;
