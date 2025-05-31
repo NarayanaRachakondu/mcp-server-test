@@ -1,40 +1,51 @@
-import * as dotenv from 'dotenv';
-import axios from 'axios';
+import * as dotenv from "dotenv";
+import axios from "axios";
 
 dotenv.config();
 
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 
 export async function summarizeText(text: string): Promise<string[]> {
   const prompt = `Summarize the following text into 3-5 bullet points:\n\n${text}`;
 
   const requestBody = {
-    model: 'gpt-3.5-turbo',
-    messages: [{ role: 'user', content: prompt }],
+    model: "claude-3-haiku-20240307", // or `claude-3-sonnet-20240229`, etc.
+    max_tokens: 1000,
     temperature: 0.5,
+    system:
+      "You are a helpful assistant that summarizes content into bullet points.",
+    messages: [
+      {
+        role: "user",
+        content: prompt,
+      },
+    ],
   };
 
   try {
     const response = await axios.post(
-      'https://api.openai.com/v1/chat/completions',
+      "https://api.anthropic.com/v1/messages",
       requestBody,
       {
         headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${OPENAI_API_KEY}`,
+          "Content-Type": "application/json",
+          "x-api-key": ANTHROPIC_API_KEY,
+          "anthropic-version": "2023-06-01",
         },
       },
     );
 
-    const content = response.data.choices[0].message.content;
+    const content = response.data.content
+      .map((item: any) => item.text)
+      .join("\n");
 
     return content
-      .split('\n')
+      .split("\n")
       .filter(
-        (line) => line.trim().startsWith('•') || line.trim().startsWith('-'),
+        (line) => line.trim().startsWith("•") || line.trim().startsWith("-"),
       );
   } catch (error) {
-    console.error('OpenAI API error:', error);
-    throw new Error('Failed to summarize text');
+    console.error("Anthropic API error:", error.response?.data || error);
+    throw new Error("Failed to summarize text using Claude");
   }
 }
