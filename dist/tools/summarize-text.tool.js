@@ -27,16 +27,26 @@ async function summarizeText(text) {
                 "anthropic-version": "2023-06-01",
             },
         });
-        const content = response.data.content
-            .map((item) => item.text)
-            .join("\n");
-        return content
-            .split("\n")
-            .filter((line) => line.trim().startsWith("•") || line.trim().startsWith("-"));
+        const content = processResponse(response.data);
+        return content.content;
     }
     catch (error) {
         console.error("Anthropic API error:", error.response?.data || error);
         throw new Error("Failed to summarize text using Claude");
     }
+}
+function processResponse(data) {
+    const rawText = data?.content?.[0]?.text?.trim() || "";
+    let parsedContent = {};
+    try {
+        parsedContent = JSON.parse(rawText);
+    }
+    catch (err) {
+        parsedContent = { rawText };
+    }
+    return {
+        aiResponse: data,
+        content: parsedContent,
+    };
 }
 //# sourceMappingURL=summarize-text.tool.js.map

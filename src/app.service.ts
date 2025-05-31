@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
-import { scrapeAndTranslate } from './tools/scrape-and-translate.tool';
-import { summarizeText } from './tools/summarize-text.tool';
+import { Injectable } from "@nestjs/common";
+import { scrapeAndTranslate } from "./tools/scrape-and-translate.tool";
+import { summarizeText } from "./tools/summarize-text.tool";
 
 @Injectable()
 export class AppService {
@@ -8,33 +8,33 @@ export class AppService {
   getToolMetadata() {
     return [
       {
-        name: 'scrapeAndTranslate',
+        name: "scrapeAndTranslate",
         description:
-          'Scrape HTML from a URL and translate it to a given language.',
+          "Scrape HTML from a URL and translate it to a given language.",
         parameters: {
-          type: 'object',
+          type: "object",
           properties: {
-            url: { type: 'string', description: 'Website URL to scrape' },
+            url: { type: "string", description: "Website URL to scrape" },
             language: {
-              type: 'string',
-              description: 'Target language code (e.g., te)',
+              type: "string",
+              description: "Target language code (e.g., te)",
             },
           },
-          required: ['url', 'language'],
+          required: ["url", "language"],
         },
       },
       {
-        name: 'summarizeText',
-        description: 'Summarize a long text into 3–5 bullet points.',
+        name: "summarizeText",
+        description: "Summarize a long text into 3–5 bullet points.",
         parameters: {
-          type: 'object',
+          type: "object",
           properties: {
             text: {
-              type: 'string',
-              description: 'The input text to summarize',
+              type: "string",
+              description: "The input text to summarize",
             },
           },
-          required: ['text'],
+          required: ["text"],
         },
       },
     ];
@@ -43,10 +43,10 @@ export class AppService {
   // 2. Handle tool invocation
   async invokeTool(toolName: string, input: any) {
     switch (toolName) {
-      case 'scrapeAndTranslate':
+      case "scrapeAndTranslate":
         return await scrapeAndTranslate(input.url, input.language);
 
-      case 'summarizeText':
+      case "summarizeText":
         return await summarizeText(input.text);
 
       default:

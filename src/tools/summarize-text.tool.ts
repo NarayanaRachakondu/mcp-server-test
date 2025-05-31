@@ -5,7 +5,7 @@ dotenv.config();
 
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 
-export async function summarizeText(text: string): Promise<string[]> {
+export async function summarizeText(text: string) {
   const prompt = `Summarize the following text into 3-5 bullet points:\n\n${text}`;
 
   const requestBody = {
@@ -35,17 +35,26 @@ export async function summarizeText(text: string): Promise<string[]> {
       },
     );
 
-    const content = response.data.content
-      .map((item: any) => item.text)
-      .join("\n");
-
-    return content
-      .split("\n")
-      .filter(
-        (line) => line.trim().startsWith("•") || line.trim().startsWith("-"),
-      );
+    const content = processResponse(response.data);
+    return content.content;
   } catch (error) {
     console.error("Anthropic API error:", error.response?.data || error);
     throw new Error("Failed to summarize text using Claude");
   }
+}
+
+function processResponse(data: any) {
+  const rawText = data?.content?.[0]?.text?.trim() || "";
+
+  let parsedContent: any = {};
+  try {
+    parsedContent = JSON.parse(rawText);
+  } catch (err) {
+    parsedContent = { rawText };
+  }
+
+  return {
+    aiResponse: data,
+    content: parsedContent,
+  };
 }

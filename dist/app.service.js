@@ -14,41 +14,41 @@ let AppService = class AppService {
     getToolMetadata() {
         return [
             {
-                name: 'scrapeAndTranslate',
-                description: 'Scrape HTML from a URL and translate it to a given language.',
+                name: "scrapeAndTranslate",
+                description: "Scrape HTML from a URL and translate it to a given language.",
                 parameters: {
-                    type: 'object',
+                    type: "object",
                     properties: {
-                        url: { type: 'string', description: 'Website URL to scrape' },
+                        url: { type: "string", description: "Website URL to scrape" },
                         language: {
-                            type: 'string',
-                            description: 'Target language code (e.g., te)',
+                            type: "string",
+                            description: "Target language code (e.g., te)",
                         },
                     },
-                    required: ['url', 'language'],
+                    required: ["url", "language"],
                 },
             },
             {
-                name: 'summarizeText',
-                description: 'Summarize a long text into 3–5 bullet points.',
+                name: "summarizeText",
+                description: "Summarize a long text into 3–5 bullet points.",
                 parameters: {
-                    type: 'object',
+                    type: "object",
                     properties: {
                         text: {
-                            type: 'string',
-                            description: 'The input text to summarize',
+                            type: "string",
+                            description: "The input text to summarize",
                         },
                     },
-                    required: ['text'],
+                    required: ["text"],
                 },
             },
         ];
     }
     async invokeTool(toolName, input) {
         switch (toolName) {
-            case 'scrapeAndTranslate':
+            case "scrapeAndTranslate":
                 return await (0, scrape_and_translate_tool_1.scrapeAndTranslate)(input.url, input.language);
-            case 'summarizeText':
+            case "summarizeText":
                 return await (0, summarize_text_tool_1.summarizeText)(input.text);
             default:
                 return { error: `Unknown tool: ${toolName}` };
